@@ -1,0 +1,326 @@
+{
+  "name": "PROJECT 09: Transforming Google Sheets into a Real-Time Automated CRM in #n8n!",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pendaftaran-khusus",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f571d1a8-7f92-4f07-bbe7-80765578b8ff",
+      "name": "Webhook",
+      "webhookId": "392b5bdb-b576-49cc-a0af-a23bb324c7b8"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1OXhts3EdCtqYz6KFEHb12CAEbw8fnG21EjJOIQpBx9g",
+          "mode": "list",
+          "cachedResultName": "8.Database Lead UMKM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OXhts3EdCtqYz6KFEHb12CAEbw8fnG21EjJOIQpBx9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OXhts3EdCtqYz6KFEHb12CAEbw8fnG21EjJOIQpBx9g/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nama ": "={{ $('Webhook').item.json.body.nama_pendaftar }}",
+            "Sumber": "={{ $('Webhook').item.json.body.sumber_campaign }}",
+            "Email": "={{ $('Webhook').item.json.body.email_pendaftar }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nama ",
+              "displayName": "Nama ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sumber",
+              "displayName": "Sumber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        672,
+        96
+      ],
+      "id": "422bf7a8-0358-40af-92b0-926b5d8322b5",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "JG4t90sgcXv9v3fP",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1OXhts3EdCtqYz6KFEHb12CAEbw8fnG21EjJOIQpBx9g",
+          "mode": "list",
+          "cachedResultName": "8.Database Lead UMKM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OXhts3EdCtqYz6KFEHb12CAEbw8fnG21EjJOIQpBx9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OXhts3EdCtqYz6KFEHb12CAEbw8fnG21EjJOIQpBx9g/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{ $json.body.email_pendaftar }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "146a32d1-396e-40d0-bd93-7aba322da88a",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "JG4t90sgcXv9v3fP",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "51fd0088-9519-420f-acdb-28366d0e08c5",
+              "leftValue": "={{ $json.row_number }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "e227970f-32ca-439e-91b2-ca6b74416bf4",
+      "name": "If",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1OXhts3EdCtqYz6KFEHb12CAEbw8fnG21EjJOIQpBx9g",
+          "mode": "list",
+          "cachedResultName": "8.Database Lead UMKM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OXhts3EdCtqYz6KFEHb12CAEbw8fnG21EjJOIQpBx9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OXhts3EdCtqYz6KFEHb12CAEbw8fnG21EjJOIQpBx9g/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('Webhook').item.json.body.email_pendaftar }}",
+            "Nama ": "={{ $('Webhook').item.json.body.nama_pendaftar }}",
+            "Sumber": "={{ $('Webhook').item.json.body.sumber_campaign }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Nama ",
+              "displayName": "Nama ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sumber",
+              "displayName": "Sumber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        672,
+        -112
+      ],
+      "id": "1e464d26-2cf0-4c20-93c3-7a443e2f7aa7",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "JG4t90sgcXv9v3fP",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3c300c38-ee36-415c-a45d-40ef4922e289",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "78020135ce1e18d23f1d2826518029bcddfec44dbf18b7fe235e495f881aa588"
+  },
+  "nodeGroups": [],
+  "id": "cSsuqV4tJcvzkdba",
+  "tags": []
+}
